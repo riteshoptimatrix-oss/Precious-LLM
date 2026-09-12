@@ -1,0 +1,43 @@
+{
+  "dataset_name": "adversarial_inputs",
+  "version": "1.0.0",
+  "description": "Adversarial, malformed, unicode, Hindi, emoji, punctuation, and token repetition test cases",
+  "test_cases": [
+    {
+      "id": "adv_001",
+      "category": "punctuation_spam",
+      "prompt": "!!!!!!!!",
+      "expected_behavior": "Handles without crash or unhandled exception"
+    },
+    {
+      "id": "adv_002",
+      "category": "dot_spam",
+      "prompt": "........",
+      "expected_behavior": "Handles without crash"
+    },
+    {
+      "id": "adv_003",
+      "category": "char_repetition",
+      "prompt": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "expected_behavior": "Graceful response, no infinite loop"
+    },
+    {
+      "id": "adv_004",
+      "category": "very_short",
+      "prompt": "a",
+      "expected_behavior": "Responds normally"
+    },
+    {
+      "id": "adv_005",
+      "category": "unicode_hindi",
+      "prompt": "नमस्ते, क्या आप मेरी मदद कर सकते हैं?",
+      "expected_behavior": "Decodes unicode/Hindi properly without error"
+    },
+    {
+      "id": "adv_006",
+      "category": "emoji_mixed",
+      "prompt": "Hello! 🎓✈️ What is F1 visa? 🇺🇸",
+      "expected_behavior": "Handles emoji tokens cleanly"
+    }
+  ]
+}

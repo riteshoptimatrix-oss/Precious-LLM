@@ -1,0 +1,22 @@
+{
+  "total_records": 15,
+  "total_conversations": 13,
+  "total_plain_texts": 2,
+  "total_messages": 26,
+  "role_distribution": {
+    "user": 13,
+    "assistant": 13
+  },
+  "character_stats": {
+    "min_characters": 12,
+    "max_characters": 159,
+    "avg_characters": 62.13,
+    "total_characters": 932
+  },
+  "language_distribution": {
+    "en": 15
+  },
+  "source_distribution": {
+    "dev_seed": 15
+  }
+}

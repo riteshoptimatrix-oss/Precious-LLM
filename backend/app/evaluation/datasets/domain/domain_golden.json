@@ -1,0 +1,49 @@
+{
+  "dataset_name": "domain_golden",
+  "version": "1.0.0",
+  "description": "Golden domain test cases for US visa and education questions",
+  "test_cases": [
+    {
+      "id": "dom_001",
+      "category": "definition",
+      "prompt": "What is an F1 visa?",
+      "keywords": ["academic", "student", "full-time", "university"],
+      "expected_routing": "DOMAIN_KNOWLEDGE_REQUIRED"
+    },
+    {
+      "id": "dom_002",
+      "category": "definition",
+      "prompt": "What is an M1 visa?",
+      "keywords": ["vocational", "non-academic", "technical", "training"],
+      "expected_routing": "DOMAIN_KNOWLEDGE_REQUIRED"
+    },
+    {
+      "id": "dom_003",
+      "category": "comparison",
+      "prompt": "What is the difference between F1 and M1?",
+      "keywords": ["academic", "vocational", "F1", "M1"],
+      "expected_routing": "DOMAIN_KNOWLEDGE_REQUIRED"
+    },
+    {
+      "id": "dom_004",
+      "category": "definition",
+      "prompt": "What is a visitor visa?",
+      "keywords": ["B1", "B2", "tourism", "business", "temporary"],
+      "expected_routing": "DOMAIN_KNOWLEDGE_REQUIRED"
+    },
+    {
+      "id": "dom_005",
+      "category": "contextual_domain",
+      "turns": [
+        {
+          "user": "What is an F1 visa?",
+          "check": "Defines F1 academic student visa"
+        },
+        {
+          "user": "How is it different from M1?",
+          "check": "Inherits context of F1 and compares with M1 vocational visa"
+        }
+      ]
+    }
+  ]
+}

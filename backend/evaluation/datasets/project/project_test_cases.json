@@ -1,0 +1,65 @@
+{
+  "dataset_name": "project_test_cases",
+  "version": "1.0.0",
+  "description": "Project Knowledge Engine test cases covering dynamic update, traceability, unknown projects, missing fields, and multiple matches",
+  "test_cases": [
+    {
+      "id": "proj_001",
+      "category": "standard_query",
+      "prompt": "What is the status of Project ABC?",
+      "expected_status": "In Progress",
+      "expected_routing": "PROJECT_KNOWLEDGE_REQUIRED"
+    },
+    {
+      "id": "proj_002",
+      "category": "manager_query",
+      "prompt": "Who manages Project ABC?",
+      "expected_manager": "John",
+      "expected_routing": "PROJECT_KNOWLEDGE_REQUIRED"
+    },
+    {
+      "id": "proj_003",
+      "category": "dynamic_update",
+      "description": "Test changing status in dataset from 'In Progress' to 'Completed', re-ingesting, and verifying live retrieval",
+      "initial_data": {
+        "project_id": "P001",
+        "project_name": "ABC",
+        "status": "In Progress",
+        "manager": "John"
+      },
+      "updated_data": {
+        "project_id": "P001",
+        "project_name": "ABC",
+        "status": "Completed",
+        "manager": "John"
+      }
+    },
+    {
+      "id": "proj_004",
+      "category": "source_traceability",
+      "prompt": "What is the status of Project ABC?",
+      "required_provenance_keys": ["project_id", "source_file", "sheet", "row"]
+    },
+    {
+      "id": "proj_005",
+      "category": "unknown_project",
+      "prompt": "What is the status of Project DOES_NOT_EXIST?",
+      "expected_response_type": "no_matching_project",
+      "forbidden_statuses": ["In Progress", "Completed", "Pending", "Active"]
+    },
+    {
+      "id": "proj_006",
+      "category": "missing_field",
+      "prompt": "When will Project ABC be completed?",
+      "project_missing_key": "completion_date",
+      "expected_response_type": "missing_field_refusal"
+    },
+    {
+      "id": "proj_007",
+      "category": "multiple_match",
+      "prompt": "What is the status of ABC?",
+      "ambiguous_records": ["ABC India", "ABC USA", "ABC Europe"],
+      "expected_response_type": "disambiguation_or_options"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+# configs/tokenizer_config.yaml — Tokenizer settings
+
+tokenizer:
+  type: "bpe"                    # Byte Pair Encoding
+  vocab_size: 8000               # Target vocabulary size
+  min_frequency: 2               # Minimum token frequency to include
+  
+  # Special tokens (order determines their IDs)
+  special_tokens:
+    - "<PAD>"     # ID: 0
+    - "<UNK>"     # ID: 1
+    - "<BOS>"     # ID: 2
+    - "<EOS>"     # ID: 3
+    - "<SEP>"     # ID: 4
+    - "<USER>"    # ID: 5
+    - "<ASST>"    # ID: 6
+    - "<SYS>"     # ID: 7
+
+  # Normalization
+  normalization:
+    unicode: "NFKC"
+    lowercase: false              # Keep casing for names etc.
+    strip_whitespace: true
+
+  # Pre-tokenization
+  pre_tokenization:
+    split_on_whitespace: true
+    split_on_punctuation: true
+
+  # Training
+  training:
+    corpus_path: "../data/datasets/conversational/train.jsonl"
+    output_dir: "../checkpoints/tokenizer/"

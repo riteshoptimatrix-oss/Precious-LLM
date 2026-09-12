@@ -1,0 +1,44 @@
+{
+  "dataset_version": "0.1.0",
+  "pipeline_version": "0.1.0",
+  "created_at": "2026-09-12T07:19:05.658465+00:00",
+  "config_snapshot": {
+    "DATASET_VERSION": "0.1.0",
+    "PIPELINE_VERSION": "0.1.0",
+    "MIN_TEXT_CHARACTERS": 2,
+    "MAX_TEXT_CHARACTERS": 10000,
+    "TRAIN_RATIO": 0.9,
+    "VALIDATION_RATIO": 0.05,
+    "TEST_RATIO": 0.05,
+    "SPLIT_SEED": 42,
+    "ENABLE_DEDUPLICATION": true,
+    "ENABLE_QUALITY_FILTERS": true
+  },
+  "splits": {
+    "train": {
+      "file_name": "train.jsonl",
+      "sha256": "cedd9fd0825c3b209f30f6056b4eb2838522c18429eb11ccbe53ffb013187b50",
+      "size_bytes": 1655,
+      "record_count": 12
+    },
+    "validation": {
+      "file_name": "validation.jsonl",
+      "sha256": "565634c16366618dd4658eb2564cd59cdecd7ad728dce48af3183098dd8906c3",
+      "size_bytes": 150,
+      "record_count": 1
+    },
+    "test": {
+      "file_name": "test.jsonl",
+      "sha256": "d6810fa2093419c25173a7150f05099d92ba083498830ca8ecce1ad14bd46e3e",
+      "size_bytes": 310,
+      "record_count": 2
+    }
+  },
+  "overall_summary": {
+    "total_records": 15,
+    "total_conversations": 13,
+    "total_plain_texts": 2,
+    "total_messages": 26,
+    "total_characters": 932
+  }
+}

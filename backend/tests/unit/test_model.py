@@ -1,0 +1,23 @@
+"""
+Precious Edu LLM — Model Unit Tests
+
+Tests for the Transformer model:
+- Forward pass output shapes
+- Causal mask correctness
+- Loss computation
+- Backward pass gradients
+- Checkpoint save/load
+"""
+
+import pytest
+
+# TODO (Phase 4): Implement model tests when Transformer is built
+#
+# class TestTransformerModel:
+#     def test_forward_pass_shapes(self): ...
+#     def test_causal_mask_prevents_future_attention(self): ...
+#     def test_loss_computation(self): ...
+#     def test_backward_pass_gradients(self): ...
+#     def test_checkpoint_save_load_roundtrip(self): ...
+#     def test_different_batch_sizes(self): ...
+#     def test_different_sequence_lengths(self): ...

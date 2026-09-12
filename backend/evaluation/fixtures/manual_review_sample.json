@@ -1,0 +1,62 @@
+{
+  "sample_name": "manual_review_sample",
+  "description": "Sample evaluation outputs for qualitative manual human review",
+  "samples": [
+    {
+      "id": "rev_001",
+      "category": "greeting",
+      "user_input": "Hello",
+      "system_response": "Hello! How can I assist you with your education and visa questions today?",
+      "human_review": {
+        "naturalness": 5,
+        "helpfulness": 5,
+        "relevance": 5,
+        "tone": "polite",
+        "hallucination": false,
+        "approved": true
+      }
+    },
+    {
+      "id": "rev_002",
+      "category": "domain",
+      "user_input": "What is an F1 visa?",
+      "system_response": "An F1 visa is a non-immigrant student visa that allows foreign students to pursue full-time academic studies at accredited US universities or institutions.",
+      "human_review": {
+        "naturalness": 5,
+        "helpfulness": 5,
+        "relevance": 5,
+        "tone": "informative",
+        "hallucination": false,
+        "approved": true
+      }
+    },
+    {
+      "id": "rev_003",
+      "category": "project",
+      "user_input": "What is the status of Project ABC?",
+      "system_response": "Project ABC is currently In Progress and managed by John.",
+      "human_review": {
+        "naturalness": 5,
+        "helpfulness": 5,
+        "relevance": 5,
+        "tone": "concise",
+        "hallucination": false,
+        "approved": true
+      }
+    },
+    {
+      "id": "rev_004",
+      "category": "unknown_handling",
+      "user_input": "What is the status of Project XYZ?",
+      "system_response": "No matching project record was found for Project XYZ in our verified database.",
+      "human_review": {
+        "naturalness": 5,
+        "helpfulness": 5,
+        "relevance": 5,
+        "tone": "safe_refusal",
+        "hallucination": false,
+        "approved": true
+      }
+    }
+  ]
+}

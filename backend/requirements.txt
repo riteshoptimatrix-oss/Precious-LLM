@@ -1,0 +1,36 @@
+# ============================================
+# Precious Edu LLM — Python Dependencies
+# ============================================
+
+# --- Web Framework ---
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+pydantic>=2.10.0
+pydantic-settings>=2.7.0
+python-dotenv>=1.0.0
+
+# --- Database ---
+motor>=3.7.0                 # Async MongoDB driver
+pymongo>=4.10.0
+
+# --- ML / Deep Learning ---
+torch>=2.1.0
+numpy>=1.26.0
+
+# --- Utilities ---
+python-multipart>=0.0.18     # For form data parsing
+sse-starlette>=2.2.0         # Server-Sent Events for streaming
+pyyaml>=6.0.0                # YAML config parsing
+orjson>=3.10.0              # Fast JSON serialization
+openpyxl>=3.1.0             # Excel parsing and workbook inspection
+beautifulsoup4>=4.12.0       # HTML parsing for website crawler & extraction
+
+# --- Testing ---
+pytest>=8.0.0
+pytest-asyncio>=0.25.0
+httpx>=0.28.0                # Async HTTP client for testing
+pytest-cov>=6.0.0
+
+# --- Logging ---
+structlog>=24.0.0            # Structured logging
+

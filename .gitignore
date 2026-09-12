@@ -1,0 +1,184 @@
+# ==========================================================================
+# Precious Edu LLM — .gitignore
+# ==========================================================================
+
+# ==========================================================================
+# Python
+# ==========================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+*.whl
+*.o
+*.a
+
+# Distribution / packaging
+dist/
+build/
+wheels/
+sdist/
+
+# ==========================================================================
+# Virtual Environment
+# ==========================================================================
+venv/
+.venv/
+env/
+ENV/
+backend/venv/
+backend/env/
+backend/.venv/
+
+# ==========================================================================
+# Environment Variables & Secrets
+# ==========================================================================
+.env
+.env.*
+!.env.example
+*.env
+!*.env.example
+config.local.php
+
+# ==========================================================================
+# IDEs / Editors
+# ==========================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vim/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+projectiles.lock
+
+# ==========================================================================
+# OS
+# ==========================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ==========================================================================
+# Model Checkpoints & Weights (Large binary files)
+# ==========================================================================
+checkpoints/model/*
+!checkpoints/model/.gitkeep
+checkpoints/tokenizer/*
+!checkpoints/tokenizer/.gitkeep
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+*.onnx
+*.h5
+*.hdf5
+*.mar
+!checkpoints/**/.gitkeep
+
+# ==========================================================================
+# Runtime Artifacts (Training / Fine-tuning / Evaluation / Tokenizer)
+# ==========================================================================
+artifacts/*
+!artifacts/**/.gitkeep
+backend/artifacts/*
+!backend/artifacts/**/.gitkeep
+
+# ==========================================================================
+# Data (Raw / Processed / Datasets)
+# ==========================================================================
+data/raw/*
+!data/raw/**/.gitkeep
+data/processed/*
+!data/processed/**/.gitkeep
+data/cleaned/*
+!data/cleaned/**/.gitkeep
+data/intermediate/*
+!data/intermediate/**/.gitkeep
+data/training/*
+!data/training/**/.gitkeep
+data/domain/raw/*
+data/domain/processed/*
+data/domain/cleaned/*
+data/domain/training/*
+data/domain/evaluation/*
+data/projects/raw/*
+data/projects/processed/*
+data/projects/cleaned/*
+data/projects/intermediate/*
+backend/data/*
+!backend/data/**/.gitkeep
+*.jsonl
+!**/.gitkeep
+!data/README.md
+!data/**/*.md
+
+# ==========================================================================
+# Evaluation Outputs
+# ==========================================================================
+evaluation/reports/*
+backend/evaluation/reports/*
+evaluation/runs/*
+backend/evaluation/runs/*
+run-*/
+run-finetune-*/
+
+# ==========================================================================
+# Scratch / Temporary Work
+# ==========================================================================
+scratch/
+tmp/
+temp/
+temporary/
+
+# ==========================================================================
+# Logs
+# ==========================================================================
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# ==========================================================================
+# Testing / Coverage
+# ==========================================================================
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+coverage.xml
+*.cover
+.hypothesis/
+pytest_cache/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+
+# ==========================================================================
+# Jupyter
+# ==========================================================================
+.ipynb_checkpoints/
+*_nbconvert_*
+
+# ==========================================================================
+# FastAPI / Uvicorn
+# ==========================================================================
+*.db
+*.sqlite
+*.sqlite3
+__pypackages__/

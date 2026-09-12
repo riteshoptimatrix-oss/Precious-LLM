@@ -1,0 +1,47 @@
+{
+  "dataset_name": "golden_general",
+  "version": "1.0.0",
+  "description": "Deterministic golden test dataset for general conversational behavior",
+  "test_cases": [
+    {
+      "id": "gen_001",
+      "category": "greeting",
+      "prompt": "Hello",
+      "expected_behavior": "Natural polite greeting, no unnecessary long explanation, no hallucinated facts",
+      "forbidden_tokens": ["F1", "M1", "Project"],
+      "expected_routing": "NO_KNOWLEDGE_REQUIRED"
+    },
+    {
+      "id": "gen_002",
+      "category": "greeting",
+      "prompt": "Hi",
+      "expected_behavior": "Short polite greeting",
+      "forbidden_tokens": ["error", "None"],
+      "expected_routing": "NO_KNOWLEDGE_REQUIRED"
+    },
+    {
+      "id": "gen_003",
+      "category": "name_statement",
+      "prompt": "My name is Ritesh.",
+      "expected_behavior": "Acknowledge the name nicely and store in memory",
+      "expected_memory_extracted": {
+        "user_name": "Ritesh"
+      },
+      "expected_routing": "NO_KNOWLEDGE_REQUIRED"
+    },
+    {
+      "id": "gen_004",
+      "category": "thanks",
+      "prompt": "Thanks",
+      "expected_behavior": "Natural polite acknowledgement",
+      "expected_routing": "NO_KNOWLEDGE_REQUIRED"
+    },
+    {
+      "id": "gen_005",
+      "category": "bye",
+      "prompt": "Bye",
+      "expected_behavior": "Natural polite conversation termination",
+      "expected_routing": "NO_KNOWLEDGE_REQUIRED"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "records_read": 19,
+  "records_valid": 15,
+  "records_rejected": 4,
+  "quarantined_count": 4,
+  "exact_duplicates_removed": 1,
+  "quality_filtered_empty": 0,
+  "quality_filtered_length": 0,
+  "quality_filtered_repetition": 1,
+  "pass_rate_pct": 78.95
+}

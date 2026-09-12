@@ -1,0 +1,47 @@
+{
+  "dataset_name": "multi_turn_conversations",
+  "version": "1.0.0",
+  "description": "Multi-turn context maintenance, memory recall, and pronoun resolution test cases",
+  "test_cases": [
+    {
+      "id": "conv_001",
+      "category": "multi_turn_context",
+      "turns": [
+        {
+          "user": "I want to study in the USA.",
+          "check": "Acknowledges study intention"
+        },
+        {
+          "user": "Which visa would I need?",
+          "check": "Identifies student visa options like F1 or M1 based on turn 1 context"
+        },
+        {
+          "user": "What documents are generally required?",
+          "check": "Provides document list relevant to student visa"
+        },
+        {
+          "user": "And what about my spouse?",
+          "check": "Understands spouse context refers to F2/M2 dependent visa for study in USA"
+        }
+      ]
+    },
+    {
+      "id": "conv_002",
+      "category": "memory_recall",
+      "turns": [
+        {
+          "user": "My name is Ritesh.",
+          "check": "Stores name Ritesh"
+        },
+        {
+          "user": "I want to study in the USA.",
+          "check": "Stores study intention"
+        },
+        {
+          "user": "What did I tell you my name was?",
+          "check": "Correctly recalls name 'Ritesh' from session memory"
+        }
+      ]
+    }
+  ]
+}

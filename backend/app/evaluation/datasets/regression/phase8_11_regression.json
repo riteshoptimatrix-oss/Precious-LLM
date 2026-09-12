@@ -1,0 +1,47 @@
+{
+  "dataset_name": "phase8_11_regression",
+  "version": "1.0.0",
+  "description": "Benchmark golden prompts for detecting regressions from Phase 8 (conversational) and Phase 11 (domain)",
+  "test_cases": [
+    {
+      "id": "reg_001",
+      "category": "phase8_general",
+      "prompt": "Hello",
+      "phase8_status": "PASS",
+      "phase11_status": "PASS",
+      "expected": "Natural greeting"
+    },
+    {
+      "id": "reg_002",
+      "category": "phase8_name",
+      "prompt": "My name is Ritesh.",
+      "phase8_status": "PASS",
+      "phase11_status": "PASS",
+      "expected": "Name acknowledgement"
+    },
+    {
+      "id": "reg_003",
+      "category": "phase11_domain",
+      "prompt": "What is an F1 visa?",
+      "phase8_status": "PARTIAL",
+      "phase11_status": "PASS",
+      "expected": "Detailed academic student visa response"
+    },
+    {
+      "id": "reg_004",
+      "category": "phase11_domain",
+      "prompt": "What is an M1 visa?",
+      "phase8_status": "PARTIAL",
+      "phase11_status": "PASS",
+      "expected": "Vocational student visa response"
+    },
+    {
+      "id": "reg_005",
+      "category": "integrated_project",
+      "prompt": "What is the status of Project ABC?",
+      "phase8_status": "N/A",
+      "phase11_status": "N/A",
+      "expected": "Project Knowledge Engine status retrieval"
+    }
+  ]
+}

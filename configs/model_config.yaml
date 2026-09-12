@@ -1,0 +1,18 @@
+# configs/model_config.yaml — Initial Development Model
+# ~10M parameters, trainable on CPU in reasonable time
+
+model:
+  vocab_size: 8000              # BPE vocabulary size
+  pad_token_id: 0               # <PAD> token ID
+  max_seq_length: 512           # Context window (tokens)
+  d_model: 256                  # Embedding / hidden dimension
+  n_heads: 8                    # Attention heads (d_k = 32)
+  n_layers: 6                   # Transformer blocks
+  d_ff: 1024                    # Feed-forward inner dimension (4 × d_model)
+  dropout: 0.1                  # Dropout rate
+  attention_dropout: 0.1        # Attention dropout
+  activation: "gelu"            # GELU activation
+  layer_norm_eps: 1.0e-5        # LayerNorm epsilon
+  weight_tying: true            # Tie embedding and LM head weights
+  pre_norm: true                # Pre-LN Transformer
+  positional_encoding: "learned" # Learned positional embeddings
