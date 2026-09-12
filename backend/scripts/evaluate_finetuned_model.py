@@ -10,12 +10,14 @@ import json
 import argparse
 import logging
 from pathlib import Path
+from typing import Tuple
 import torch
 from torch.utils.data import DataLoader
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+BACKEND_ROOT = Path(__file__).resolve().parent.parent   # .../backend
+PROJECT_ROOT = BACKEND_ROOT.parent                       # .../Precious Edu LLM
+if str(BACKEND_ROOT) not in sys.path:
+    sys.path.insert(0, str(BACKEND_ROOT))
 
 from app.ml.fine_tuning.config import FineTuningConfig
 from app.ml.fine_tuning.dataset import ConversationalFineTuningDataset
@@ -48,7 +50,7 @@ def main():
     parser.add_argument(
         "--base_checkpoint",
         type=str,
-        default="artifacts/training/run-train_model/checkpoints/latest.pt",
+        default=str(PROJECT_ROOT / "artifacts/training/run-train_model/checkpoints/latest.pt"),
         help="Path to Phase 7 pretrained base model checkpoint."
     )
     parser.add_argument(
@@ -60,19 +62,19 @@ def main():
     parser.add_argument(
         "--test_dataset",
         type=str,
-        default="data/training/conversational/test.jsonl",
+        default=str(PROJECT_ROOT / "data/training/conversational/test.jsonl"),
         help="Path to test split JSONL file."
     )
     parser.add_argument(
         "--tokenizer_dir",
         type=str,
-        default="artifacts/tokenizer/v1",
+        default=str(PROJECT_ROOT / "artifacts/tokenizer/v1"),
         help="Path to tokenizer directory."
     )
     parser.add_argument(
         "--output_dir",
         type=str,
-        default="artifacts/fine_tuning/evaluation_results",
+        default=str(PROJECT_ROOT / "artifacts/fine_tuning/evaluation_results"),
         help="Output directory for reports and comparison files."
     )
 
@@ -125,7 +127,7 @@ def main():
     finetuned_ckpt_path = args.finetuned_checkpoint
     if not finetuned_ckpt_path:
         # Search for latest fine_tuning run checkpoint
-        ft_dir = Path("artifacts/fine_tuning")
+        ft_dir = PROJECT_ROOT / "artifacts/fine_tuning"
         runs = sorted(ft_dir.glob("run-finetune-*"))
         if runs:
             latest_run = runs[-1]

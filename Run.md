@@ -31,3 +31,16 @@ python -m scripts.inspect_domain_dataset
 python -m scripts.inspect_tokenizer
 python -m scripts.inspect_model
 python -m scripts.inspect_conversations
+
+
+
+
+
+
+
+
+
+
+
+python run.py
+python run.py server
