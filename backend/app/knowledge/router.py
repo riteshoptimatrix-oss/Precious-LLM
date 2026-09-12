@@ -26,12 +26,36 @@ class IntentClassificationResult:
         predicted_intent: str,
         confidence: float,
         resolved_query: str,
-        previous_context: Optional[str] = None
+        previous_context: Optional[str] = None,
+        country_entity: Optional[str] = None,
+        visa_type: Optional[str] = None
     ):
         self.predicted_intent = predicted_intent
         self.confidence = confidence
         self.resolved_query = resolved_query
         self.previous_context = previous_context
+        if country_entity is None and resolved_query:
+            q_lower = resolved_query.lower()
+            if "usa" in q_lower or "united states" in q_lower or "america" in q_lower or "f1" in q_lower or "m1" in q_lower:
+                country_entity = "USA"
+            elif "canada" in q_lower or "lmia" in q_lower or "spp" in q_lower or "sds" in q_lower:
+                country_entity = "Canada"
+            elif "australia" in q_lower:
+                country_entity = "Australia"
+            elif "uk" in q_lower or "united kingdom" in q_lower or "britain" in q_lower:
+                country_entity = "UK"
+        if visa_type is None and resolved_query:
+            q_lower = resolved_query.lower()
+            if "student" in q_lower or "study" in q_lower or "f1" in q_lower or "m1" in q_lower:
+                visa_type = "Student Visa"
+            elif "visitor" in q_lower or "tourist" in q_lower:
+                visa_type = "Visitor Visa"
+            elif "work" in q_lower or "lmia" in q_lower:
+                visa_type = "Work Permit"
+            elif "ielts" in q_lower:
+                visa_type = "IELTS Coaching"
+        self.country_entity = country_entity
+        self.visa_type = visa_type
 
 
 class RoutingDecision(str, Enum):
@@ -133,33 +157,40 @@ class KnowledgeRouter:
         if any(w in cleaned_msg for w in ["who is the owner", "who is owner", "founder", "director", "who owns", "owner"]):
             return IntentClassificationResult("about_us_general", 0.95, raw_msg)
         if any(w in cleaned_msg for w in ["contact info", "contact details", "contact us", "reach you", "office address", "head office", "location"]):
-            if not any(w in cleaned_msg for w in ["visa", "ielts", "student", "study"]):
+            if not any(w in cleaned_msg for w in ["visa", "ielts", "student", "study", "terms", "condition", "policy"]):
                 return IntentClassificationResult("contact_general", 0.95, raw_msg)
 
         # 4. Multi-turn follow-up resolution (ONLY for genuine context-dependent follow-ups)
-        is_followup = any(trig in cleaned_msg for trig in self.FOLLOW_UP_TRIGGERS) or cleaned_msg in [
-            "tell me how", "how", "how to apply", "when", "where", "how much", "what time", "in which time", "and fees"
+        is_followup = any(trig in cleaned_msg for trig in self.FOLLOW_UP_TRIGGERS) or any(
+            w in cleaned_msg for w in [
+                "how to apply", "how can i apply", "how do i apply", "tell me how",
+                "how to join", "how to start", "what documents are needed", "which documents",
+                "what documents", "documents needed"
+            ]
+        ) or cleaned_msg in [
+            "how", "when", "where", "how much", "what time", "in which time", "and fees"
         ]
         if is_followup and recent_messages:
             prev_topic, prev_ctx_str = self._extract_previous_topic(recent_messages)
             if prev_topic == "ielts":
                 if any(w in cleaned_msg for w in ["time", "timing", "timings", "when", "duration", "schedule", "long", "commitment"]):
                     resolved = "what is the total time commitment for ielts?"
-                    return IntentClassificationResult("ielts_module_duration", 0.95, resolved, prev_ctx_str)
+                    return IntentClassificationResult("ielts_module_duration", 0.95, resolved, prev_ctx_str, visa_type="IELTS Coaching")
                 elif any(w in cleaned_msg for w in ["how", "join", "enroll", "process", "register", "start", "fee", "fees"]):
                     resolved = "what is the process to join ielts coaching?"
-                    return IntentClassificationResult("service_ielts", 0.95, resolved, prev_ctx_str)
+                    return IntentClassificationResult("service_ielts", 0.95, resolved, prev_ctx_str, visa_type="IELTS Coaching")
                 else:
                     resolved = f"IELTS coaching: {raw_msg}"
-                    return IntentClassificationResult("service_ielts", 0.92, resolved, prev_ctx_str)
+                    return IntentClassificationResult("service_ielts", 0.92, resolved, prev_ctx_str, visa_type="IELTS Coaching")
 
             elif prev_topic in ("student_visa", "australia", "canada", "uk", "usa"):
+                country_label = prev_topic.upper() if prev_topic in ("uk", "usa") else prev_topic.capitalize()
                 if any(w in cleaned_msg for w in ["document", "documents", "need", "needed", "require", "required", "checklist"]):
-                    resolved = "what documents are needed for university admission applications?"
-                    return IntentClassificationResult("study_abroad_documents", 0.95, resolved, prev_ctx_str)
+                    resolved = f"what documents are needed for {country_label} student visa applications?"
+                    return IntentClassificationResult("study_abroad_documents", 0.95, resolved, prev_ctx_str, country_entity=country_label, visa_type="Student Visa")
                 elif any(w in cleaned_msg for w in ["how", "process", "apply"]):
                     country_intent = f"visa_{prev_topic}_student" if prev_topic in ("australia", "canada", "usa") else "countries_offered_uk" if prev_topic == "uk" else "service_student_visas"
-                    return IntentClassificationResult(country_intent, 0.95, f"{prev_topic} student visa process", prev_ctx_str)
+                    return IntentClassificationResult(country_intent, 0.95, f"{country_label} student visa application process", prev_ctx_str, country_entity=country_label, visa_type="Student Visa")
 
             elif prev_topic == "services":
                 resolved = "what services do you provide?"
@@ -238,7 +269,7 @@ class KnowledgeRouter:
                 return "canada", f"Previous turn topic: Canada ('{msg.get('content', '')}')"
             if "uk" in content:
                 return "uk", f"Previous turn topic: UK ('{msg.get('content', '')}')"
-            if "usa" in content or "united states" in content or "america" in content:
+            if any(w in content for w in ["usa", "united states", "america", "f1", "m1"]):
                 return "usa", f"Previous turn topic: USA ('{msg.get('content', '')}')"
             if any(w in content for w in ["student visa", "study visa", "study permit", "student permit"]):
                 return "student_visa", f"Previous turn topic: Student Visa ('{msg.get('content', '')}')"

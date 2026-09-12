@@ -18,7 +18,7 @@ async def test_e2e_website_knowledge_flow():
     
     db = MagicMock()
     k_engine = KnowledgeEngine(db, website_knowledge_service=mock_website_service)
-    decision, project_ctx, website_ctx = await k_engine.retrieve_combined_context("student visa guidance for UK")
+    decision, project_ctx, website_ctx, struct_ctx, candidates = await k_engine.retrieve_combined_context("student visa guidance for UK")
     
     assert website_ctx is not None
     assert "CAS letter and financial proof" in website_ctx

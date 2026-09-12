@@ -1,0 +1,13 @@
+{
+  "total_raw_records": 10,
+  "valid_records": 9,
+  "quarantined_records": 1,
+  "conflicts_detected": 0,
+  "train_records": 7,
+  "val_records": 2,
+  "split_ratio": 0.8,
+  "seed": 42,
+  "train_file": "C:\\Users\\Lenovo\\Desktop\\Ritesh Gajjar Work\\Precious Edu LLM\\data\\domain\\training\\train.jsonl",
+  "val_file": "C:\\Users\\Lenovo\\Desktop\\Ritesh Gajjar Work\\Precious Edu LLM\\data\\domain\\training\\val.jsonl",
+  "golden_file": "C:\\Users\\Lenovo\\Desktop\\Ritesh Gajjar Work\\Precious Edu LLM\\data\\domain\\evaluation\\golden.jsonl"
+}

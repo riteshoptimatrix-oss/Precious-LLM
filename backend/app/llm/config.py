@@ -29,10 +29,10 @@ class LLMConfig:
     max_new_tokens: int = 64
 
     # Default Hyperparameters for Inference Generation
-    temperature: float = 0.7
-    top_k: int = 50
-    top_p: float = 0.9
-    repetition_penalty: float = 1.1
+    temperature: float = 0.65
+    top_k: int = 40
+    top_p: float = 0.90
+    repetition_penalty: float = 1.10
     deterministic: bool = False        # If True, overrides temperature=0.0 and top_k=1
 
     # Startup Warmup
@@ -40,49 +40,51 @@ class LLMConfig:
 
     def resolve_checkpoint_path(self) -> Path:
         """
-        Auto-resolves Phase 8 fine-tuned checkpoint or fallback pretrained checkpoint.
+        Auto-resolves the latest trained checkpoint: domain-adapted, fine-tuned, or pretrained.
         """
         if self.model_checkpoint_path:
             p = Path(self.model_checkpoint_path)
             if p.exists():
                 return p
 
-        # 1. Search artifacts/fine_tuning for latest run
-        ft_dir = Path("artifacts/fine_tuning")
-        if ft_dir.exists():
-            runs = sorted(ft_dir.glob("run-finetune-*"))
-            if runs:
-                latest_run = runs[-1]
-                final_model = latest_run / "final" / "model.pt"
-                if final_model.exists():
-                    return final_model
-                ckpt_latest = latest_run / "checkpoints" / "latest.pt"
-                if ckpt_latest.exists():
-                    return ckpt_latest
+        candidate_dirs = [
+            Path("artifacts/domain_training"),
+            Path("backend/artifacts/domain_training"),
+            Path("artifacts/fine_tuning"),
+            Path("backend/artifacts/fine_tuning"),
+        ]
 
-        # 2. Search backend/artifacts/fine_tuning
-        ft_dir_backend = Path("backend/artifacts/fine_tuning")
-        if ft_dir_backend.exists():
-            runs = sorted(ft_dir_backend.glob("run-finetune-*"))
-            if runs:
-                latest_run = runs[-1]
-                final_model = latest_run / "final" / "model.pt"
-                if final_model.exists():
-                    return final_model
-                ckpt_latest = latest_run / "checkpoints" / "latest.pt"
-                if ckpt_latest.exists():
-                    return ckpt_latest
+        found_models: list[Path] = []
+        for cdir in candidate_dirs:
+            if cdir.exists():
+                for run_dir in sorted(cdir.glob("run-*")):
+                    final_p = run_dir / "final" / "model.pt"
+                    if final_p.exists():
+                        found_models.append(final_p)
+                    best_p = run_dir / "checkpoints" / "best.pt"
+                    if best_p.exists():
+                        found_models.append(best_p)
+                    latest_p = run_dir / "checkpoints" / "latest.pt"
+                    if latest_p.exists():
+                        found_models.append(latest_p)
 
-        # 3. Fallback to Phase 7 pretrained model checkpoint
-        pt_ckpt = Path("artifacts/training/run-train_model/checkpoints/latest.pt")
-        if pt_ckpt.exists():
-            return pt_ckpt
+        if found_models:
+            # Sort by last modification time descending to choose the latest trained checkpoint
+            found_models.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+            return found_models[0]
 
-        pt_ckpt_backend = Path("backend/artifacts/training/run-train_model/checkpoints/latest.pt")
-        if pt_ckpt_backend.exists():
-            return pt_ckpt_backend
+        # Fallback to pretrained base model checkpoint
+        for pt_path in [
+            Path("artifacts/training/run-train_model/checkpoints/best.pt"),
+            Path("backend/artifacts/training/run-train_model/checkpoints/best.pt"),
+            Path("artifacts/training/run-train_model/checkpoints/latest.pt"),
+            Path("backend/artifacts/training/run-train_model/checkpoints/latest.pt"),
+        ]:
+            if pt_path.exists():
+                return pt_path
 
-        raise FileNotFoundError("No valid Phase 8 fine-tuned or Phase 7 pretrained checkpoint artifact found.")
+        raise FileNotFoundError("No valid Phase 8/11 fine-tuned or Phase 7 pretrained checkpoint artifact found.")
+
 
     def resolve_tokenizer_dir(self) -> Path:
         """

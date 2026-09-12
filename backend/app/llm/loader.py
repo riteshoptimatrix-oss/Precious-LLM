@@ -82,5 +82,16 @@ class CustomLLMModelLoader:
             f"Successfully loaded Precious AI LLM ({model.num_parameters['total']:,} params) "
             f"on device '{device}'."
         )
+        logger.info(f"MODEL USED: {model.__class__.__name__}")
+        logger.info(f"MODEL PARAMETERS: {model.num_parameters['total']:,}")
+        logger.info(f"CHECKPOINT: {ckpt_path}")
+        logger.info(f"DEVICE: {device}")
+        logger.info(
+            f"GENERATION CONFIG: temperature={self.config.temperature}, "
+            f"top_k={self.config.top_k}, top_p={self.config.top_p}, "
+            f"repetition_penalty={self.config.repetition_penalty}, "
+            f"max_new_tokens={self.config.max_new_tokens}"
+        )
 
         return model, tokenizer, model_config, ckpt_path
+

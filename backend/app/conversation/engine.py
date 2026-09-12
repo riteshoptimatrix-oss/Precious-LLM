@@ -50,9 +50,17 @@ class ConversationEngine:
         self.session_repo = SessionRepository(db)
         self.message_repo = MessageRepository(db)
         self.memory_repo = MemoryRepository(db)
-
-        self.generator = generator or TemporaryResponseGenerator()
+        if generator is not None:
+            self.generator = generator
+        else:
+            try:
+                from app.llm import get_llm_service
+                self.generator = get_llm_service()
+            except Exception as e:
+                logger.warning(f"Could not initialize LLMService: {e}")
+                self.generator = TemporaryResponseGenerator()
         self.context_manager = context_manager or ContextManager(self.message_repo)
+
         self.context_builder = context_builder or ContextBuilder()
         self.memory_manager = memory_manager or MemoryManager(self.memory_repo)
 
@@ -239,20 +247,26 @@ class ConversationEngine:
                 "user_input": top_sq.user_input,
             }]
 
-            # Direct Answer Rule: For high-confidence factual matches, return verified response directly
-            if top_sq.score >= direct_threshold:
+            # Generate grounded, diverse response via the Custom LLM Service
+            candidate_struct_text = struct_context_text or (
+                f"[Record: {top_sq.record_id}]\n"
+                f"Intent: {top_sq.intent}\n"
+                f"Category: {top_sq.category}\n"
+                f"Input: {top_sq.user_input}\n"
+                f"Answer: {top_sq.response}"
+            )
+            context = self.context_builder.build_context(
+                current_user_message=resolved_query,
+                recent_messages=recent_history,
+                memories=active_memories,
+                project_knowledge=proj_context_text,
+                website_knowledge=web_context_text,
+                structured_knowledge=candidate_struct_text,
+                metadata=metadata or {}
+            )
+            response_text = await self.generator.generate(context)
+            if not response_text:
                 response_text = top_sq.response
-            else:
-                context = self.context_builder.build_context(
-                    current_user_message=resolved_query,
-                    recent_messages=recent_history,
-                    memories=active_memories,
-                    project_knowledge=proj_context_text,
-                    website_knowledge=web_context_text,
-                    structured_knowledge=struct_context_text,
-                    metadata=metadata or {}
-                )
-                response_text = await self.generator.generate(context)
 
         # SECONDARY: Website Chunks Match
         elif (web_context_text or (website_candidates and website_candidates[0].get("score", 0.0) >= getattr(settings, "WEBSITE_MIN_SCORE", 5.0))):
@@ -315,30 +329,28 @@ class ConversationEngine:
             response_text = StructuredQANormalizer.clean_boilerplate(response_text)
 
 
-        # Section 27: Structured Development Logs
-        logger.info(f"USER QUERY: {user_message}")
-        logger.info(f"PREVIOUS CONTEXT: {previous_context or 'None'}")
-        logger.info(f"RESOLVED QUERY: {resolved_query}")
-        logger.info(f"DETECTED INTENT: {predicted_intent}")
-        logger.info(f"INTENT CONFIDENCE: {confidence:.2f}")
+        # Section 24: Critical Development Debug Output
+        gen_cfg = getattr(self.generator, "config", None)
+        ckpt_name = getattr(self.generator, "checkpoint_path", None)
+        logger.info("\n" + "=" * 40)
+        logger.info("PRECIOUS AI DEBUG")
+        logger.info("=================")
+        logger.info(f"QUERY: {user_message}")
+        logger.info(f"INTENT: {predicted_intent}")
+        logger.info(f"COUNTRY: {intent_res.country_entity if intent_res else 'None'}")
+        logger.info(f"SERVICE: {intent_res.visa_type if intent_res else 'None'}")
+        logger.info(f"WEBSITE CHUNKS: {len(website_candidates)} chunks retrieved")
+        logger.info(f"PROJECT CONTEXT: {'Yes' if proj_context_text else 'None'}")
+        logger.info(f"CONVERSATION CONTEXT: {len(recent_history)} prior turns")
+        logger.info(f"MODEL CHECKPOINT: {ckpt_name or 'backend/artifacts/fine_tuning/latest'}")
+        logger.info(f"TEMPERATURE: {getattr(gen_cfg, 'temperature', 0.65)}")
+        logger.info(f"TOP_K: {getattr(gen_cfg, 'top_k', 40)}")
+        logger.info(f"TOP_P: {getattr(gen_cfg, 'top_p', 0.90)}")
+        logger.info(f"REPETITION_PENALTY: {getattr(gen_cfg, 'repetition_penalty', 1.10)}")
+        logger.info(f"GENERATED TOKENS: {len(response_text.split())} words")
+        logger.info(f"FINAL RESPONSE: {response_text}")
+        logger.info("=" * 40 + "\n")
 
-        logger.info("STRUCTURED_QA CANDIDATES:")
-        if structured_candidates:
-            for idx, c in enumerate(structured_candidates[:3], start=1):
-                logger.info(f"  {idx}. intent={c.intent} score={c.score:.1f} user_input={c.user_input}")
-        else:
-            logger.info("  None")
-
-        logger.info("WEBSITE CANDIDATES:")
-        if website_candidates:
-            for idx, c in enumerate(website_candidates[:3], start=1):
-                logger.info(f"  {idx}. score={c.get('score', 0.0):.1f} title={c.get('title', '')} url={c.get('canonical_url', '')}")
-        else:
-            logger.info("  None")
-
-        logger.info(f"SELECTED SOURCE: {response_source}")
-        logger.info(f"SELECTED RECORD: {selected_id} (file: {selected_source})")
-        logger.info(f"FINAL ANSWER: {response_text}")
 
         # 8. Persist assistant response
         assistant_msg_model = MessageModel(

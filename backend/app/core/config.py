@@ -36,7 +36,8 @@ class Settings(BaseSettings):
 
     # --- MongoDB ---
     MONGODB_URI: str = "mongodb://127.0.0.1:27017"
-    MONGODB_DB_NAME: str = "precious_ai"
+    MONGODB_DB_NAME: str = "precious_edu_llm"
+
 
     # --- Model ---
     MODEL_CHECKPOINT_PATH: str = "../checkpoints/model/latest.pt"
